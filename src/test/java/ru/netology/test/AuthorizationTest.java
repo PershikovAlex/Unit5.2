@@ -12,7 +12,6 @@ import static com.codeborne.selenide.Selenide.open;
 public class AuthorizationTest {
     @BeforeEach
     void SetUp() {
-        Configuration.holdBrowserOpen = true;
         open("http://localhost:9999");
     }
 
