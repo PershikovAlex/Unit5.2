@@ -1,7 +1,6 @@
 package ru.netology.test;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.netology.data.DataGenerator;
@@ -9,7 +8,7 @@ import ru.netology.data.DataGenerator;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
-public class AuthorizationTest {
+public class AutorizationTest {
     @BeforeEach
     void SetUp() {
         open("http://localhost:9999");
@@ -77,5 +76,23 @@ public class AuthorizationTest {
         $("[data-test-id=action-login]").click();
         $("[data-test-id=login].input_invalid .input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
         $("[data-test-id=password].input_invalid .input__sub").shouldHave(Condition.exactText("Поле обязательно для заполнения"));
+    }
+
+    @Test
+    void randomLoginUnregisteredUserTest() {
+        var invalidUser = DataGenerator.Registration.getUser("active");
+        $("[data-test-id=login] .input__box .input__control").val(DataGenerator.Registration.getRandomLogin());
+        $("[data-test-id=password] .input__box .input__control").val(invalidUser.getPassword());
+        $("[data-test-id=action-login]").click();
+        $("[data-test-id=error-notification] .notification__content").shouldHave(Condition.exactText("Ошибка! " + "Неверно указан логин или пароль"));
+    }
+
+    @Test
+    void randomPasswordUnregisteredUserTest() {
+        var invalidUser = DataGenerator.Registration.getUser("active");
+        $("[data-test-id=login] .input__box .input__control").val(invalidUser.getLogin());
+        $("[data-test-id=password] .input__box .input__control").val(DataGenerator.Registration.getRandomPassword());
+        $("[data-test-id=action-login]").click();
+        $("[data-test-id=error-notification] .notification__content").shouldHave(Condition.exactText("Ошибка! " + "Неверно указан логин или пароль"));
     }
 }
